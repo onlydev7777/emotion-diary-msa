@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      default-filters: # 모든 서비스에 적용되는 default-filter
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+        - name: LoggingFilter
+          args:
+            preLogger: true
+            postLogger: true
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://localhost:5173' # front-app url
+            allow-credentials: true # JWT 나 쿠키를 사용해 메시지를 보내야 할 경우 true
+            allowedHeaders: '*'
+            allowedMethods: # 전체 메서드 명시
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
+              - PATCH
+            exposed-headers:
+              - Authorization
+              - Refresh-Token
+            max-age: 3600
+
+      
+      routes: # predicates 에 매칭되는 uri, filter 정의
+        - id: emotion-diary-member
+          uri: lb://EMOTION-DIARY-MEMBER  # Eureka Server 에 등록된 Client 서버의 spring.application.name 으로 로드밸런싱
+          predicates:
+            - Path=/login, /signup        # /login, /signup 요청은 바로 Member 서비스로 이관
+            - Method=POST, OPTIONS
+          filters:
+            - RemoveRequestHeader=Cookie
+
+        - id: emotion-diary-member
+          uri: lb://EMOTION-DIARY-MEMBER
+          predicates:
+            - Path=/member/**             # /member/** 요청은 JWT Validation Check
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/member/(?<segment>.*), /$\{segment}    # /member/info >> /info 요청으로 변환 후 Member 서비스 이관
+            - JwtValidationCheckFilter
+
+        - id: emotion-diary-diary
+          uri: lb://EMOTION-DIARY-DIARY
+          predicates:
+            - Path=/diary/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/diary/(?<segment>.*), /$\{segment}
+            - JwtValidationCheckFilter
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:9761/eureka
+
+server:
+  port: 9000
