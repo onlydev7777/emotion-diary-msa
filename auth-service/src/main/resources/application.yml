@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: auth-service
+  config:
+    import:
+      - application-security.yml
+      - application-db.yml
+      - application-eureka-client.yml
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        generate-ddl: true
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 50
+      open-in-view: false
+
+server:
+  port: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httpexchanges, busrefresh, info, metrics, prometheus
+

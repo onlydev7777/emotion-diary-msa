@@ -14,7 +14,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:5173' # front-app url
+            allowedOrigins: 'http://localhost:8081' # front-app url
             allow-credentials: true # JWT 나 쿠키를 사용해 메시지를 보내야 할 경우 true
             allowedHeaders: '*'
             allowedMethods: # 전체 메서드 명시
@@ -31,11 +31,10 @@ spring:
 
       
       routes: # predicates 에 매칭되는 uri, filter 정의
-        - id: emotion-diary-member
-          uri: lb://EMOTION-DIARY-MEMBER  # Eureka Server 에 등록된 Client 서버의 spring.application.name 으로 로드밸런싱
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/login, /signup        # /login, /signup 요청은 바로 Member 서비스로 이관
-            - Method=POST, OPTIONS
+            - Path=/auth/**, /oauth2/**
           filters:
             - RemoveRequestHeader=Cookie
 
@@ -64,4 +63,7 @@ eureka:
       defaultZone: http://localhost:9761/eureka
 
 server:
-  port: 9000
+  port: 9001
+
+jwt:
+  secret-key: f4f0d91f787470f05eba631f1bac031bb95424497666984ee7cc9b73bab1604c
