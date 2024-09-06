@@ -10,11 +10,16 @@ import java.io.IOException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 public class LoginRequestFilter extends AbstractAuthenticationProcessingFilter {
 
   public LoginRequestFilter(String defaultFilterProcessesUrl) {
     super(defaultFilterProcessesUrl);
+  }
+
+  public LoginRequestFilter(RequestMatcher requestMatcher) {
+    super(requestMatcher);
   }
 
   /*

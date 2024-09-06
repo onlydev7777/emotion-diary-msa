@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### application-security.yml ignore
+**/application-security.yml
+
+### emotion-diary-config ignore
+emotion-diary-config

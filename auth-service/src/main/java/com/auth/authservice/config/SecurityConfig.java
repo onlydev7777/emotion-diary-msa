@@ -73,7 +73,8 @@ public class SecurityConfig {
   private final CustomAuthenticationFailureEntryPoint customAuthenticationFailureEntryPoint;
   private final JwtProvider jwtProvider;
   private final RedisService redisService;
-  private final String[] SKIP_LIST = {"/", "/auth/**", "/oauth2/**", "/member/**",
+  private final String[] SKIP_LIST = {"/", "/auth/**", "/oauth2/**", "/login/**",
+      "/member/**",
       "/index", "/error",
       "/js/**", "/images/**", "/css/**", "/scss/**", "/favicon.ico"};
 
@@ -127,6 +128,12 @@ public class SecurityConfig {
 
   public LoginRequestFilter loginRequestFilter(AuthenticationManager authenticationManager, LoginSuccessHandler successHandler) {
     LoginRequestFilter loginRequestFilter = new LoginRequestFilter("/auth/login");
+//    LoginRequestFilter loginRequestFilter = new LoginRequestFilter(new OrRequestMatcher(
+//        Arrays.asList(
+//            new AntPathRequestMatcher("/login"),
+//            new AntPathRequestMatcher("/auth/login")
+//        )
+//    ));
     loginRequestFilter.setAuthenticationManager(authenticationManager);
     loginRequestFilter.setAuthenticationSuccessHandler(successHandler);
     loginRequestFilter.setAuthenticationFailureHandler(new LoginFailureHandler());

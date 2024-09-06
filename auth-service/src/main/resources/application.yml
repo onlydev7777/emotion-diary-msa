@@ -20,7 +20,8 @@ spring:
       open-in-view: false
 
 server:
-  port: 0
+  port: 9002
+#  port: 0
 
 management:
   endpoints:

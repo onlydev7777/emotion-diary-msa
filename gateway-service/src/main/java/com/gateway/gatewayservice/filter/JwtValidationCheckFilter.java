@@ -41,7 +41,7 @@ public class JwtValidationCheckFilter extends AbstractGatewayFilterFactory<JwtVa
       String path = request.getURI().getPath();
 
       //로그인, 회원가입 요청 Valid Check Pass!
-      if (path.startsWith("/auth") || path.startsWith("/oauth2")) {
+      if (path.startsWith("/auth") || path.startsWith("/oauth2") || path.startsWith("/login/oauth2")) {
         return chain.filter(exchange);
       }
 

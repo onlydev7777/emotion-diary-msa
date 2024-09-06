@@ -34,7 +34,7 @@ spring:
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/auth/**, /oauth2/**, /member/**
+            - Path=/auth/**, /member/**
           filters:
             - RemoveRequestHeader=Cookie
         #            - JwtValidationCheckFilter
@@ -45,7 +45,8 @@ spring:
             - Path=/diary/**
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/diary/(?<segment>.*), /$\{segment}
+            #            - RewritePath=/diary/(?<segment>.*), /$\{segment}
+            - RewritePath=/diary(?:/(?<segment>.*))?, /$\{segment}
 #            - JwtValidationCheckFilter
 eureka:
   client:
