@@ -4,16 +4,22 @@ server:
 spring:
   application:
     name: config-service
-    profiles:
-      active: native
   cloud:
     config:
       server:
         git:
-          uri: https://github.com/onlydev7777/springboot-msa-3.0
-          search-paths:
-            - git-config-repo
-          default-label: master
+          uri: git@github.com:onlydev7777/emotion-diary-conifg.git
+          default-label: main
+          private-key: |
+            -----BEGIN EC PRIVATE KEY-----
+            MHcCAQEEIIp3N9rhz5XNOBoSlE3qut+BYi9GVZJee6RHXrA1jPUUoAoGCCqGSM49
+            AwEHoUQDQgAE3z+O47Ox04b1+9XbaBh4gTe4wfd6kMdNF2pJZ7l7cFS4I1QDOTcR
+            FauaCzSsoI3UMWBZGT3ZFFGABHEaWTUgUg==
+            -----END EC PRIVATE KEY-----
+          ignore-local-ssh-settings: true
+          host-key: AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+          host-key-algorithm: ecdsa-sha2-nistp256
+
         bootstrap: true
   rabbitmq:
     host: 127.0.0.1

@@ -2,6 +2,7 @@ package com.auth.authservice.security.util;
 
 import com.auth.authservice.security.dto.oauth.OAuth2Payload;
 import com.auth.authservice.security.jwt.Payload;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -37,5 +38,11 @@ public class TokenUtil {
 
   public static String getUserId() {
     return getPayload().getUserId();
+  }
+
+  public static void idCheck(Long memberId) {
+    if (getMemberId() != memberId) {
+      throw new AccessDeniedException("memberId is Not Equals");
+    }
   }
 }

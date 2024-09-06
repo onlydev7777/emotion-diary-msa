@@ -38,6 +38,12 @@ public class JwtValidationCheckFilter extends AbstractGatewayFilterFactory<JwtVa
   public GatewayFilter apply(Config config) {
     return (exchange, chain) -> {
       ServerHttpRequest request = exchange.getRequest();
+      String path = request.getURI().getPath();
+
+      //로그인, 회원가입 요청 Valid Check Pass!
+      if (path.startsWith("/auth") || path.startsWith("/oauth2")) {
+        return chain.filter(exchange);
+      }
 
       HttpHeaders headers = request.getHeaders();
       if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {

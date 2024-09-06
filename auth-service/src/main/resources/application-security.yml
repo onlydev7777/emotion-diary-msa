@@ -69,11 +69,11 @@ spring:
 #            jwk-set-uri: http://localhost:8080/realms/oauth2/protocol/openid-connect/certs
 #            user-name-attribute: preferred_username
 
-jwt:
-  access-token-header: Authorization
-  refresh-token-header: Refresh-Token
-  iss: localhost:9001
-  secret-key: f4f0d91f787470f05eba631f1bac031bb95424497666984ee7cc9b73bab1604c
-  expiration-time: 1800             # 1800 seconds : 30 minutes
-  #  expiration-time: 60             # 60 seconds : 1 minutes
-  refresh-expiration-time: 86400    # 86400 seconds : 24 hours
+#jwt:
+#  access-token-header: Authorization
+#  refresh-token-header: Refresh-Token
+#  iss: localhost:9001
+#  secret-key: f4f0d91f787470f05eba631f1bac031bb95424497666984ee7cc9b73bab1604c
+#  expiration-time: 1800             # 1800 seconds : 30 minutes
+#  #  expiration-time: 60             # 60 seconds : 1 minutes
+#  refresh-expiration-time: 86400    # 86400 seconds : 24 hours

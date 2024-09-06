@@ -34,27 +34,19 @@ spring:
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
-            - Path=/auth/**, /oauth2/**
+            - Path=/auth/**, /oauth2/**, /member/**
           filters:
             - RemoveRequestHeader=Cookie
+        #            - JwtValidationCheckFilter
 
-        - id: emotion-diary-member
-          uri: lb://EMOTION-DIARY-MEMBER
-          predicates:
-            - Path=/member/**             # /member/** 요청은 JWT Validation Check
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/member/(?<segment>.*), /$\{segment}    # /member/info >> /info 요청으로 변환 후 Member 서비스 이관
-            - JwtValidationCheckFilter
-
-        - id: emotion-diary-diary
-          uri: lb://EMOTION-DIARY-DIARY
+        - id: ediary-diary
+          uri: lb://EDIARY-DIARY
           predicates:
             - Path=/diary/**
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/diary/(?<segment>.*), /$\{segment}
-            - JwtValidationCheckFilter
+#            - JwtValidationCheckFilter
 eureka:
   client:
     register-with-eureka: true

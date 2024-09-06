@@ -5,7 +5,7 @@ import com.auth.authservice.domain.dto.MemberDto;
 import com.auth.authservice.domain.embeddable.Email;
 import com.auth.authservice.domain.embeddable.Password;
 import com.auth.authservice.service.dto.MemberJoinRequest;
-import com.auth.authservice.service.dto.MemberJoinResponse;
+import com.auth.authservice.service.dto.MemberResponse;
 import java.util.Set;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -32,7 +32,9 @@ public interface MemberMapper {
     return new Email(email);
   }
 
-  MemberJoinResponse toResponse(MemberDto memberDto);
+
+  @Mapping(target = "email", expression = "java(memberDto.getEmail().getEmail())")
+  MemberResponse toResponse(MemberDto memberDto);
 
   @Mapping(target = "password", expression = "java(toPassword(request.getPassword(), passwordEncoder))")
   @Mapping(target = "email", expression = "java(toEmail(request.getEmail()))")
