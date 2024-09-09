@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/member")
 @RestController
@@ -86,8 +88,15 @@ public class MemberController {
   @GetMapping("/{id}")
   public ResponseEntity<ApiResult<MemberResponse>> findMember(@PathVariable Long id) {
 //    Long memberId = TokenUtil.getMemberId();
-
+    log.debug("start /member/{id}");
+//    try {
+//      Thread.sleep(3000L);
+//      throw new RuntimeException("장애발생!");
+//    } catch (InterruptedException e) {
+//      e.printStackTrace();
+//    }
     MemberDto memberDto = service.findById(id);
+    log.debug("end /member/{id}");
     return ResponseEntity.ok(ApiResult.OK(mapper.toResponse(memberDto)));
   }
 }

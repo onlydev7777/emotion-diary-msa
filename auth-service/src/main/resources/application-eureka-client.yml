@@ -1,10 +1,10 @@
 eureka:
   instance:
-    #    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-    # OAuth2 Provider Redirect URI 설정 유지 : localhost:8081
-    instance-id: localhost:${server.port}
-    hostname: localhost
-    prefer-ip-address: false
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  #     OAuth2 Provider Redirect URI 설정 유지 : localhost:8081
+  #    instance-id: localhost:${server.port}
+  #    hostname: localhost
+  #    prefer-ip-address: false
   client:
     register-with-eureka: true
     fetch-registry: true

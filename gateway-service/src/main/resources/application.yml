@@ -36,7 +36,7 @@ spring:
           predicates:
             - Path=/auth/**, /member/**
           filters:
-            - RemoveRequestHeader=Cookie
+        #            - RemoveRequestHeader=Cookie
         #            - JwtValidationCheckFilter
 
         - id: ediary-diary
@@ -60,3 +60,9 @@ server:
 
 jwt:
   secret-key: f4f0d91f787470f05eba631f1bac031bb95424497666984ee7cc9b73bab1604c
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, info, metrics, prometheus

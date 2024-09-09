@@ -12,6 +12,9 @@ import com.emotion.emotiondiarydiary.mapper.DiaryMapper;
 import com.emotion.emotiondiarydiary.service.DiaryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class DiaryController {
@@ -31,6 +35,7 @@ public class DiaryController {
   private final DiaryService service;
   private final DiaryMapper mapper;
   private final AuthServiceClient authServiceClient;
+  private final CircuitBreakerFactory circuitBreakerFactory;
 
   @GetMapping("/test")
   public String test() {
@@ -42,7 +47,13 @@ public class DiaryController {
   @GetMapping("/{diaryId}")
   public ResponseEntity<ApiResult<DiaryResponse>> findDiary(Long diaryId) {
     DiaryDto diaryDto = service.findById(diaryId);
-    MemberResponse memberResponse = authServiceClient.getMember(diaryDto.getMemberId()).getResponse();
+//    MemberResponse memberResponse = authServiceClient.getMember(diaryDto.getMemberId()).getResponse();
+
+    CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
+    MemberResponse memberResponse = circuitbreaker.run(
+        () -> authServiceClient.getMember(diaryDto.getMemberId()).getResponse(),
+        throwable -> new MemberResponse()
+    );
 
     DiaryResponse diaryResponse = mapper.toResponse(diaryDto, memberResponse);
     return ResponseEntity.ok(ApiResult.OK(diaryResponse));
@@ -68,11 +79,19 @@ public class DiaryController {
 
   @GetMapping("/{memberId}/month-list")
   public ResponseEntity<ApiResult<DiaryListResponse>> findDiariesByMonth(@PathVariable Long memberId, @RequestParam String diaryYearMonth) {
+    log.debug("start /diary/{memberId}/month-list");
     List<DiaryResponse> diaryResponseList = service.findDiariesByMonth(memberId, diaryYearMonth).stream()
         .map(mapper::toResponse)
         .toList();
 
-    MemberResponse memberResponse = authServiceClient.getMember(memberId).getResponse();
+//    MemberResponse memberResponse = authServiceClient.getMember(memberId).getResponse();
+
+    CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
+    MemberResponse memberResponse = circuitbreaker.run(
+        () -> authServiceClient.getMember(memberId).getResponse(),
+        throwable -> new MemberResponse()
+    );
+    log.debug("end /diary/{memberId}/month-list");
 
     return ResponseEntity.ok(ApiResult.OK(
         new DiaryListResponse(diaryResponseList, memberResponse)
