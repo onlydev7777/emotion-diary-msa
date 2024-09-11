@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "auth-service")
 public interface AuthServiceClient {
 
-  @GetMapping("/member/{id}")
+  @GetMapping(value = "/member/{id}")
   ApiResult<MemberResponse> getMember(@PathVariable Long id);
 }

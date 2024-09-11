@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-09-06T17:34:54+0900",
-    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 17.0.5 (Amazon.com Inc.)"
+    date = "2024-09-11T16:42:59+0900",
+    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 21.0.3 (Eclipse Adoptium)"
 )
 @Component
 public class DiaryMapperImpl implements DiaryMapper {
@@ -67,6 +67,7 @@ public class DiaryMapperImpl implements DiaryMapper {
         diaryResponse.emotionStatus( dto.getEmotionStatus() );
         diaryResponse.diaryDate( dto.getDiaryDate() );
         diaryResponse.diaryYearMonth( dto.getDiaryYearMonth() );
+        diaryResponse.memberId( dto.getMemberId() );
 
         return diaryResponse.build();
     }
@@ -85,6 +86,7 @@ public class DiaryMapperImpl implements DiaryMapper {
         diaryResponse.emotionStatus( dto.getEmotionStatus() );
         diaryResponse.diaryDate( dto.getDiaryDate() );
         diaryResponse.diaryYearMonth( dto.getDiaryYearMonth() );
+        diaryResponse.memberId( dto.getMemberId() );
 
         return diaryResponse.build();
     }

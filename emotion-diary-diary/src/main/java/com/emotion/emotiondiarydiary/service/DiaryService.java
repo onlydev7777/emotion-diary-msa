@@ -20,6 +20,7 @@ public class DiaryService {
   @Transactional
   public DiaryDto save(DiaryDto dto) {
     Diary savedDiary = repository.save(mapper.toEntity(dto));
+
     return mapper.toDto(savedDiary);
   }
 

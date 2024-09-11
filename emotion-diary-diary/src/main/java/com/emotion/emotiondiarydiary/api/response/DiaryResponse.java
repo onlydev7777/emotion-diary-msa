@@ -21,5 +21,5 @@ public class DiaryResponse {
   private EmotionStatus emotionStatus;
   private LocalDate diaryDate;
   private String diaryYearMonth;
-  private MemberResponse memberResponse;
+  private Long memberId;
 }

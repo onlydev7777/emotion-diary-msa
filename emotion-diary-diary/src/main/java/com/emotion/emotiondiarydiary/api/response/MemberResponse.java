@@ -19,4 +19,9 @@ public class MemberResponse {
   private String name;
   private String email;
   private SocialType socialType;
+  private PointResponse pointResponse;
+
+  public void setPointResponse(PointResponse pointResponse) {
+    this.pointResponse = pointResponse;
+  }
 }

@@ -36,8 +36,7 @@ spring:
           predicates:
             - Path=/auth/**, /member/**
           filters:
-        #            - RemoveRequestHeader=Cookie
-        #            - JwtValidationCheckFilter
+            - JwtValidationCheckFilter
 
         - id: ediary-diary
           uri: lb://EDIARY-DIARY
@@ -47,7 +46,16 @@ spring:
             - RemoveRequestHeader=Cookie
             #            - RewritePath=/diary/(?<segment>.*), /$\{segment}
             - RewritePath=/diary(?:/(?<segment>.*))?, /$\{segment}
-#            - JwtValidationCheckFilter
+            - JwtValidationCheckFilter
+
+        - id: ediary-point
+          uri: lb://EDIARY-POINT
+          predicates:
+            - Path=/point/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/point(?:/(?<segment>.*))?, /$\{segment}
+            - JwtValidationCheckFilter
 eureka:
   client:
     register-with-eureka: true

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
  * - 로그인 성공에 대한 응답은 해당 핸들러를 통해서만 이루어진다.
  * - 이를 통해 모듈 간 결합도는 낮추고 응집도는 높인다.
  */
+@Slf4j
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
   private final RedisService redisService;
@@ -48,6 +50,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     String refreshToken = jwtProvider.refreshToken(payload.getRedisKey());
     Jwt jwt = new Jwt(accessToken, refreshToken);
 
+    log.info("login access token = {}", accessToken);
     redisService.accessTokenSave(payload.getRedisKey(), jwt.getAccessToken());
     redisService.refreshTokenSave(payload.getRedisKey(), jwt.getRefreshToken());
 

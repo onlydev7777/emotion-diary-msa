@@ -12,11 +12,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
   private final String[] skipUrlList;
@@ -48,7 +50,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         request.getHeader(jwtProvider.getAccessTokenHeader())
     );
 
+    log.info("login blacklist token = {}", token);
     if (redisService.blackListTokenGet(token)) {
+//      request.getHeaderNames().asIterator().forEachRemaining(
+//          h -> log.info("header = {} value = {}", h, request.getHeader(h))
+//      );
       throw new JwtException("Token is blacklisted");
     }
 

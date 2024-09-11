@@ -74,7 +74,6 @@ public class SecurityConfig {
   private final JwtProvider jwtProvider;
   private final RedisService redisService;
   private final String[] SKIP_LIST = {"/", "/auth/**", "/oauth2/**", "/login/**",
-      "/member/**",
       "/index", "/error",
       "/js/**", "/images/**", "/css/**", "/scss/**", "/favicon.ico"};
 

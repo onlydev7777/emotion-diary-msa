@@ -6,10 +6,16 @@ import com.emotion.emotiondiarydiary.api.response.DeleteResponse;
 import com.emotion.emotiondiarydiary.api.response.DiaryListResponse;
 import com.emotion.emotiondiarydiary.api.response.DiaryResponse;
 import com.emotion.emotiondiarydiary.api.response.MemberResponse;
+import com.emotion.emotiondiarydiary.api.response.PointResponse;
 import com.emotion.emotiondiarydiary.dto.DiaryDto;
+import com.emotion.emotiondiarydiary.dto.PointHistoryRequest;
 import com.emotion.emotiondiarydiary.error.ApiResult;
 import com.emotion.emotiondiarydiary.mapper.DiaryMapper;
+import com.emotion.emotiondiarydiary.security.jwt.Payload;
+import com.emotion.emotiondiarydiary.security.util.TokenUtil;
 import com.emotion.emotiondiarydiary.service.DiaryService;
+import com.emotion.emotiondiarydiary.service.PointKafkaProducer;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +41,9 @@ public class DiaryController {
   private final DiaryService service;
   private final DiaryMapper mapper;
   private final AuthServiceClient authServiceClient;
+  private final PointServiceClient pointServiceClient;
   private final CircuitBreakerFactory circuitBreakerFactory;
+  private final PointKafkaProducer kafkaProducer;
 
   @GetMapping("/test")
   public String test() {
@@ -62,6 +70,13 @@ public class DiaryController {
   @PostMapping
   public ResponseEntity<ApiResult<DiaryResponse>> saveDiary(@RequestBody DiaryRequest request) {
     DiaryResponse savedDiaryResponse = mapper.toResponse(service.save(mapper.toDto(request)));
+    PointHistoryRequest pointHistoryRequest = PointHistoryRequest.builder()
+        .memberId(request.getMemberId())
+        .score(10)
+        .details("일기쓰기")
+        .build();
+
+    kafkaProducer.send(pointHistoryRequest);
     return ResponseEntity.ok(ApiResult.OK(savedDiaryResponse));
   }
 
@@ -78,7 +93,8 @@ public class DiaryController {
   }
 
   @GetMapping("/{memberId}/month-list")
-  public ResponseEntity<ApiResult<DiaryListResponse>> findDiariesByMonth(@PathVariable Long memberId, @RequestParam String diaryYearMonth) {
+  public ResponseEntity<ApiResult<DiaryListResponse>> findDiariesByMonth(@PathVariable Long memberId, @RequestParam String diaryYearMonth,
+      HttpServletRequest request) {
     log.debug("start /diary/{memberId}/month-list");
     List<DiaryResponse> diaryResponseList = service.findDiariesByMonth(memberId, diaryYearMonth).stream()
         .map(mapper::toResponse)
@@ -86,11 +102,31 @@ public class DiaryController {
 
 //    MemberResponse memberResponse = authServiceClient.getMember(memberId).getResponse();
 
+//    log.info("Authorization Token : {}", request.getHeader(HttpHeaders.AUTHORIZATION));
+    log.info("Authorization Token : {}", TokenUtil.getToken());
     CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
     MemberResponse memberResponse = circuitbreaker.run(
-        () -> authServiceClient.getMember(memberId).getResponse(),
-        throwable -> new MemberResponse()
+        () -> {
+          log.info("Authorization Async Token : {}", TokenUtil.getToken());
+          return authServiceClient.getMember(memberId).getResponse();
+        },
+        throwable -> {
+          throwable.printStackTrace();
+          return new MemberResponse();
+        }
     );
+
+    PointResponse pointResponse = circuitbreaker.run(
+        () -> pointServiceClient.getPointByMemberId(memberId).getResponse(),
+        throwable -> {
+          throwable.printStackTrace();
+          return new PointResponse();
+        }
+    );
+
+    memberResponse.setPointResponse(pointResponse);
+    Payload payload = TokenUtil.getPayload();
+    log.debug(payload.toString());
     log.debug("end /diary/{memberId}/month-list");
 
     return ResponseEntity.ok(ApiResult.OK(
