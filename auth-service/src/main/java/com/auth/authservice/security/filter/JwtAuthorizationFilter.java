@@ -52,9 +52,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     log.info("login blacklist token = {}", token);
     if (redisService.blackListTokenGet(token)) {
-//      request.getHeaderNames().asIterator().forEachRemaining(
-//          h -> log.info("header = {} value = {}", h, request.getHeader(h))
-//      );
       throw new JwtException("Token is blacklisted");
     }
 

@@ -16,21 +16,21 @@ eureka:
     service-url:
       defaultZone: http://localhost:9761/eureka
 
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        failure-rate-threshold: 4
-        wait-duration-in-open-state:
-          seconds: 4
-        sliding-window-type: count_based
-        sliding-window-size: 2
-  timelimiter:
-    configs:
-      default:
-        timeout-duration:
-          seconds: 4
-          
+        #resilience4j:
+        #  circuitbreaker:
+        #    configs:
+        #      default:
+        #        failure-rate-threshold: 4
+        #        wait-duration-in-open-state:
+        #          seconds: 4
+        #        sliding-window-type: count_based
+        #        sliding-window-size: 2
+        #  timelimiter:
+        #    configs:
+        #      default:
+        #        timeout-duration:
+        #          seconds: 4
+
 server:
   port: 0
 

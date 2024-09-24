@@ -16,6 +16,6 @@ public class PointKafkaProducer {
 
   public void send(PointHistoryRequest request) {
     kafkaTemplate.send(TOPIC, request);
-    log.info("{} 토픽 전송! {}", TOPIC, request.getMemberId());
+    log.info("{} 토픽 전송! memberId : {}", TOPIC, request.getMemberId());
   }
 }

@@ -23,6 +23,6 @@ public class PointKafkaConsumer {
     PointDto pointDto = service.getOrSave(request.getMemberId());
     dto.setPointId(pointDto.getId());
     PointHistoryDto savedDto = service.add(dto);
-    log.info("PointKafkaConsumer.add : {}", savedDto.getPointId());
+    log.info("PointKafkaConsumer.add > memberId : {}, pointId : {}, pointHistoryId : {}", pointDto.getMemberId(), pointDto.getId(), savedDto.getId());
   }
 }

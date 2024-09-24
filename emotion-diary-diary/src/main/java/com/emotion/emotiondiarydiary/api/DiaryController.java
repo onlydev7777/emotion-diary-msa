@@ -76,6 +76,7 @@ public class DiaryController {
         .details("일기쓰기")
         .build();
 
+    log.info("kafkaProducer.send 호출 : memberId : {}", pointHistoryRequest.getMemberId());
     kafkaProducer.send(pointHistoryRequest);
     return ResponseEntity.ok(ApiResult.OK(savedDiaryResponse));
   }
