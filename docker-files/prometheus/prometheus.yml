@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: [ "localhost:9090" ]
+  - job_name: "gateway-service"
+    scrape_interval: 15s
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: [ "localhost:9001" ]
+  - job_name: "ediary-diary"
+    scrape_interval: 15s
+    metrics_path: "/diary/actuator/prometheus"
+    static_configs:
+      - targets: [ "localhost:9001" ]
+  - job_name: "auth-service"
+    scrape_interval: 15s
+    metrics_path: "/auth/actuator/prometheus"
+    static_configs:
+      - targets: [ "localhost:9001" ]

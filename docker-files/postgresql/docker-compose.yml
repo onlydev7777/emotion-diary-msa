@@ -1,0 +1,20 @@
+version: "3"
+
+networks:
+  emotion-service-network:
+    external: true
+
+services:
+  postgres:
+    image: postgres:16.3
+    restart: always
+    container_name: emotion-postgres
+    ports:
+      - 54399:54316
+    networks:
+      - emotion-service-network
+    environment:
+      PGPORT: 54316
+      POSTGRES_USER: emotion_real
+      POSTGRES_PASSWORD: qwer1234!
+      POSTGRES_DB: emotionmemberdb
